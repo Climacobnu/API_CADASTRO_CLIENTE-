@@ -5,48 +5,45 @@ import { ClienteService } from '../servico/cliente.service';
 @Component({
   selector: 'app-principal',
   templateUrl: './principal.component.html',
-  styleUrl: './principal.component.css'
+  styleUrl: './principal.component.css',
 })
 export class PrincipalComponent {
 
-// Objecto do tipo Cliente
-cliente = new Cliente();
+  // Objeto do tipo Cliente
+  cliente = new Cliente();
 
-// Variável para visibilidade dos botões
-btnCadastro: boolean = true;
+  // Variável para visibilidade dos botões
+  btnCadastro:boolean = true;
 
-// Variável para visibilidade da tabela
-tabela:boolean = true;
+  // Variável para visibilidade da tabela
+  tabela:boolean = true;
 
-// JSON de clientes
-clientes:Cliente[] = [];
+  // JSON de clientes
+  clientes:Cliente[] = [];
 
+  // Construtor
+  constructor(private servico:ClienteService){}
 
-// Construtor
-constructor(private servico:ClienteService){}
+  // Método de seleção
+  selecionar():void{
+    this.servico.selecionar()
+    .subscribe(retorno => this.clientes = retorno);
+  }
 
-// Método de seleção
-selecionar():void{
-  this.servico.selecionar()
-  .subscribe(retorno => this.clientes = retorno);
-
-}
-
-  // Métoo de cadastro
+  // Método de cadastro
   cadastrar():void{
     this.servico.cadastrar(this.cliente)
     .subscribe(retorno => {
 
-      //Cadastrar o cliente no vetor
-       this.clientes.push(retorno);
+      // Cadastrar o cliente no vetor
+      this.clientes.push(retorno);
 
-       // Limpar formulário
-       this.cliente = new Cliente();
+      // Limpar formulário
+      this.cliente = new Cliente();
 
-       // Mensagem
-       alert('Cliente cadastrado com sucesso!');
-
-      });
+      // Mensagem
+      alert('Cliente cadastrado com sucesso!');
+    });
   }
 
   // Método para selecionar um cliente específico
@@ -56,7 +53,7 @@ selecionar():void{
     this.cliente = this.clientes[posicao];
 
     // Visibilidade dos botões
-    this.btnCadastro = false
+    this.btnCadastro = false;
 
     // Visibilidade da tabela
     this.tabela = false;
@@ -69,7 +66,7 @@ selecionar():void{
     this.servico.editar(this.cliente)
     .subscribe(retorno => {
 
-      // Obter posição do vetor onde está o cliente
+      // Obter posiçao do vetor onde está o cliente
       let posicao = this.clientes.findIndex(obj => {
         return obj.id == retorno.id;
       });
@@ -80,10 +77,10 @@ selecionar():void{
       // Limpar formulário
       this.cliente = new Cliente();
 
-      // Visibilidades dos botões
+      // Visibilidade dos botões
       this.btnCadastro = true;
 
-      // Visibilidades da tabela
+      // Visibilidade da tabela
       this.tabela = true;
 
       // Mensagem
@@ -93,8 +90,53 @@ selecionar():void{
 
   }
 
-// Método de inicialização
-ngOnInit(){
-this.selecionar();
-}
+  // Método para remover clientes
+  remover():void{
+
+    this.servico.remover(this.cliente.id)
+    .subscribe(retorno => {
+
+      // Obter posiçao do vetor onde está o cliente
+      let posicao = this.clientes.findIndex(obj => {
+        return obj.id == this.cliente.id;
+      });
+
+      // Remover cliente do vetor
+      this.clientes.splice(posicao, 1);
+
+      // Limpar formulário
+      this.cliente = new Cliente();
+
+      // Visibilidade dos botões
+      this.btnCadastro = true;
+
+      // Visibilidade da tabela
+      this.tabela = true;
+
+      // Mensagem
+      alert('Cliente removido com sucesso!');
+
+    });
+
+  }
+
+  // Método para cancelar
+  cancelar():void{
+
+    // Limpar formulário
+    this.cliente = new Cliente();
+
+    // Visibilidade dos botões
+    this.btnCadastro = true;
+
+    // Visibilidade da tabela
+    this.tabela = true;
+
+  }
+
+  // Método de inicialização
+  ngOnInit(){
+    this.selecionar();
+  }
+
 }
