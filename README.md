@@ -11,6 +11,7 @@ Consulte **[Implantação](#-implanta%C3%A7%C3%A3o)** para saber como implantar 
 ### 📋 Pré-requisitos
 
 Spring Boot
+
 Angular 18
 
 
